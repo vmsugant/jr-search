@@ -11,20 +11,21 @@ public class HelloWorld {
     // First we will validate the filepath argument
 
     File logFile = new File(Greeter.getPathToTargetFile(args));
-    try{
+    try {
       Greeter.doBasicFilePathValidationChecks(logFile);
-    }
-    catch(Exception e){
+    } catch (Exception e) {
       System.out.println("Exception While Reading file. Going ahead with default file");
+      logFile = new File(Greeter.getDefaultFilePath());
     }
-    logFile = new File(Greeter.getDefaultFilePath());
     String searchKey = Greeter.getSearchKey(args);
     // Next we need to validate the Keyword Argument
-    try{
+    try {
       Greeter.doSearchKeyValidation(searchKey);
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("Exception While Reading search Keyword. Going ahead with default keyword");
     }
+
+    System.out.println(searchKey);
     List<String> matchedLines = new ArrayList<String>();
     try (BufferedReader b = new BufferedReader(new FileReader(logFile))) {
       String readLine = "";
@@ -32,20 +33,18 @@ public class HelloWorld {
       Instant searchStart = Instant.now();
       while ((readLine = b.readLine()) != null) {
         lineCount++;
-        if(readLine.contains(searchKey)){
+        if (readLine.contains(searchKey)) {
           matchedLines.add(readLine);
           System.out.println("Key found at line - " + readLine + " In line number " + lineCount);
         }
       }
       Instant searchEnd = Instant.now();
-			long timeElapsedNames = Duration.between(searchStart, searchEnd).toMillis();
-			System.out.println("Search time: " + timeElapsedNames + "ms");
-			System.out.println("Line Count: " + lineCount);
-    }
-    catch(IOException e)
-    {
+      long timeElapsedNames = Duration.between(searchStart, searchEnd).toMillis();
+      System.out.println("Search time: " + timeElapsedNames + "ms");
+      System.out.println("Line Count: " + lineCount);
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
-}
+  }
 }
